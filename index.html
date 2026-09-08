@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>VinScale — CRM / DMS Prototype</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root{
+  --ink:#070B14;
+  --ink-2:#0D1526;
+  --panel:#0F1830;
+  --panel-line:#212C46;
+  --blue:#2B5CFF;
+  --cyan:#00E0FF;
+  --fog:#EEF1F7;
+  --steel:#7C879C;
+  --steel-dim:#586178;
+  --white:#FFFFFF;
+  --line:#DDE2EC;
+  --green:#22C58B;
+  --amber:#F5A623;
+  --red:#FF5C6C;
+  --radius:14px;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--fog);font-family:'Inter',sans-serif;color:var(--ink);}
+.page{max-width:1440px;margin:0 auto;padding:36px 32px 100px;}
+
+/* header */
+.top-eyebrow{display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;}
+.brand-chip{display:flex;align-items:center;gap:9px;}
+.brand-chip span{font-family:'Space Grotesk';font-weight:700;font-size:15px;}
+.eyebrow{font-family:'IBM Plex Mono';font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--steel);display:flex;align-items:center;gap:8px;}
+.eyebrow .dot{width:5px;height:5px;background:var(--blue);border-radius:50%;}
+
+h1.headline{font-family:'Space Grotesk';font-size:30px;font-weight:700;margin:0 0 6px;}
+p.sub{font-family:'Inter';font-size:14px;color:var(--steel);margin:0 0 40px;max-width:620px;line-height:1.6;}
+
+/* ===================== DESKTOP BROWSER FRAME ===================== */
+.browser-frame{
+  border-radius:16px;overflow:hidden;border:1px solid var(--line);
+  box-shadow:0 30px 60px -20px rgba(7,11,20,.25);
+  background:var(--white);
+}
+.browser-chrome{
+  background:#F3F5F9;border-bottom:1px solid var(--line);
+  padding:12px 16px;display:flex;align-items:center;gap:10px;
+}
+.browser-chrome .dots{display:flex;gap:6px;}
+.browser-chrome .dots span{width:9px;height:9px;border-radius:50%;background:#D7DCE6;}
+.browser-chrome .urlbar{
+  flex:1;max-width:420px;margin:0 auto;background:#fff;border:1px solid var(--line);
+  border-radius:8px;padding:6px 12px;font-family:'IBM Plex Mono';font-size:11px;color:var(--steel);
+  display:flex;align-items:center;gap:6px;
+}
+.browser-chrome .urlbar svg{width:11px;height:11px;flex:none;}
+
+.app-shell{display:grid;grid-template-columns:236px 1fr 300px;min-height:760px;}
+
+/* sidebar */
+.sidebar{background:var(--ink);color:#fff;padding:22px 16px;display:flex;flex-direction:column;}
+.sidebar .brand{display:flex;align-items:center;gap:10px;padding:4px 8px 26px;}
+.sidebar .brand .word{font-family:'Space Grotesk';font-weight:700;font-size:16px;}
+.sidebar .brand .word .scale{color:var(--cyan);}
+.navgroup{margin-bottom:22px;}
+.navgroup .label{font-family:'IBM Plex Mono';font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--steel-dim);padding:0 10px;margin-bottom:8px;}
+.navitem{
+  display:flex;align-items:center;gap:11px;padding:9px 10px;border-radius:9px;
+  font-family:'Inter';font-size:13px;font-weight:500;color:#B7C0D6;margin-bottom:2px;
+}
+.navitem svg{width:16px;height:16px;flex:none;opacity:.85;}
+.navitem.active{background:rgba(43,92,255,.16);color:#fff;}
+.navitem.active svg{opacity:1;color:var(--cyan);}
+.navitem .badge{margin-left:auto;background:var(--blue);color:#fff;font-family:'IBM Plex Mono';font-size:9px;padding:1px 6px;border-radius:20px;}
+.sidebar-footer{margin-top:auto;padding-top:16px;border-top:1px solid #1B2438;}
+.scan-fab{
+  width:100%;background:linear-gradient(135deg,var(--blue),#1746DB);color:#fff;
+  border-radius:11px;padding:12px;display:flex;align-items:center;justify-content:center;gap:8px;
+  font-family:'Inter';font-weight:600;font-size:12.5px;
+}
+.scan-fab svg{width:15px;height:15px;}
+
+/* main */
+.main{padding:26px 30px;overflow:auto;}
+.main-topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;}
+.searchbar{
+  flex:1;max-width:380px;display:flex;align-items:center;gap:8px;
+  background:var(--fog);border:1px solid var(--line);border-radius:10px;padding:9px 13px;
+  font-family:'Inter';font-size:12.5px;color:var(--steel);
+}
+.searchbar svg{width:14px;height:14px;}
+.topbar-right{display:flex;align-items:center;gap:14px;}
+.icon-btn{width:34px;height:34px;border-radius:9px;background:var(--fog);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;position:relative;}
+.icon-btn svg{width:15px;height:15px;color:var(--steel);}
+.icon-btn .dot{position:absolute;top:6px;right:6px;width:6px;height:6px;background:var(--red);border-radius:50%;border:1.5px solid #fff;}
+.avatar{width:34px;height:34px;border-radius:9px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk';font-size:12px;font-weight:700;}
+
+.page-title{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:20px;}
+.page-title h2{font-family:'Space Grotesk';font-size:22px;margin:0;font-weight:600;}
+.page-title .muted{font-family:'Inter';font-size:12.5px;color:var(--steel);margin-top:2px;}
+.btn-primary{background:var(--blue);color:#fff;font-family:'Inter';font-weight:600;font-size:12.5px;padding:10px 16px;border-radius:9px;display:inline-flex;align-items:center;gap:7px;}
+.btn-primary svg{width:13px;height:13px;}
+
+/* KPI row */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:26px;}
+.kpi-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;}
+.kpi-card .label{font-family:'IBM Plex Mono';font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--steel);}
+.kpi-card .value{font-family:'Space Grotesk';font-size:28px;font-weight:700;margin-top:8px;}
+.kpi-card .delta{font-family:'Inter';font-size:11.5px;margin-top:6px;font-weight:600;}
+.kpi-card .delta.up{color:var(--green);}
+.kpi-card .delta.down{color:var(--red);}
+
+/* table */
+.panel{background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;margin-bottom:24px;}
+.panel-head{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid var(--line);}
+.panel-head h3{font-family:'Space Grotesk';font-size:15px;margin:0;font-weight:600;}
+.link{font-family:'Inter';font-size:12px;font-weight:600;color:var(--blue);}
+table{width:100%;border-collapse:collapse;}
+th{
+  text-align:left;font-family:'IBM Plex Mono';font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--steel);padding:10px 20px;border-bottom:1px solid var(--line);background:#FBFCFE;
+}
+td{padding:13px 20px;border-bottom:1px solid #F0F2F7;font-family:'Inter';font-size:12.5px;vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+.veh-cell{display:flex;align-items:center;gap:10px;}
+.veh-thumb{width:38px;height:28px;border-radius:6px;background:linear-gradient(135deg,#DCE4F5,#EEF1F7);flex:none;}
+.veh-cell .name{font-weight:600;}
+.veh-cell .trim{font-size:11px;color:var(--steel);}
+.mono{font-family:'IBM Plex Mono';font-size:11.5px;color:var(--steel);}
+.status-pill{font-family:'Inter';font-size:10.5px;font-weight:600;padding:4px 10px;border-radius:20px;display:inline-block;}
+.status-pill.available{background:rgba(34,197,139,.12);color:var(--green);}
+.status-pill.pending{background:rgba(245,166,35,.14);color:#B5790C;}
+.status-pill.sold{background:rgba(124,135,156,.14);color:var(--steel);}
+
+/* pipeline */
+.pipeline{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;}
+.pipe-col{background:#FBFCFE;border:1px solid var(--line);border-radius:12px;padding:12px;}
+.pipe-col .col-head{display:flex;justify-content:space-between;align-items:center;font-family:'IBM Plex Mono';font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--steel);margin-bottom:10px;padding:0 2px;}
+.pipe-col .col-head .count{background:var(--line);color:var(--ink);padding:1px 7px;border-radius:20px;font-size:10px;}
+.lead-card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:11px 12px;margin-bottom:9px;}
+.lead-card .name{font-family:'Inter';font-weight:600;font-size:12px;}
+.lead-card .veh{font-family:'Inter';font-size:11px;color:var(--steel);margin-top:2px;}
+.lead-card .foot{display:flex;justify-content:space-between;align-items:center;margin-top:9px;}
+.lead-card .src{font-family:'IBM Plex Mono';font-size:9px;color:var(--steel);text-transform:uppercase;letter-spacing:.05em;}
+.lead-avatar{width:20px;height:20px;border-radius:6px;background:var(--blue);color:#fff;font-family:'Space Grotesk';font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+
+/* right rail */
+.rail{background:#FBFCFE;border-left:1px solid var(--line);padding:22px 18px;}
+.rail h3{font-family:'Space Grotesk';font-size:14px;margin:0 0 4px;font-weight:600;}
+.rail .rail-sub{font-family:'Inter';font-size:11px;color:var(--steel);margin-bottom:16px;}
+.scan-feed-item{display:flex;gap:11px;padding:11px 0;border-bottom:1px solid var(--line);}
+.scan-feed-item:last-child{border-bottom:none;}
+.scan-ico{
+  width:32px;height:32px;border-radius:9px;background:var(--ink);flex:none;
+  display:flex;align-items:center;justify-content:center;
+}
+.scan-ico svg{width:15px;height:15px;}
+.scan-feed-item .vin-mono{font-family:'IBM Plex Mono';font-size:10.5px;color:var(--ink);}
+.scan-feed-item .time{font-family:'Inter';font-size:10.5px;color:var(--steel);margin-top:3px;}
+.rail-cta{
+  margin-top:18px;border:1px dashed var(--line);border-radius:12px;padding:16px;text-align:center;
+}
+.rail-cta p{font-family:'Inter';font-size:11.5px;color:var(--steel);margin:0 0 10px;line-height:1.5;}
+.rail-cta button{width:100%;background:var(--ink);color:#fff;border-radius:9px;padding:9px;font-family:'Inter';font-weight:600;font-size:11.5px;}
+
+/* ===================== MOBILE PWA FRAME ===================== */
+.mobile-section{margin-top:64px;}
+.section-head{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:28px;}
+.section-head h2{font-family:'Space Grotesk';font-size:20px;margin:0;font-weight:600;}
+
+.mobile-row{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;max-width:980px;}
+.phone-shell{
+  background:var(--ink);border-radius:34px;padding:12px;border:1px solid #1B2438;
+  box-shadow:0 30px 60px -20px rgba(7,11,20,.3);
+}
+.phone-inner{background:var(--ink);border-radius:24px;overflow:hidden;min-height:600px;display:flex;flex-direction:column;color:#fff;position:relative;}
+.notch{width:90px;height:20px;background:var(--ink);border-radius:0 0 14px 14px;margin:0 auto;position:relative;z-index:5;}
+.statusbar{display:flex;justify-content:space-between;font-family:'IBM Plex Mono';font-size:9px;color:#6E7B94;padding:6px 18px 10px;}
+
+.install-banner{
+  margin:0 12px 12px;background:linear-gradient(135deg,rgba(43,92,255,.16),rgba(0,224,255,.08));
+  border:1px solid rgba(43,92,255,.35);border-radius:11px;padding:10px 12px;
+  display:flex;align-items:center;gap:10px;
+}
+.install-banner .im{width:30px;height:30px;border-radius:8px;background:var(--blue);flex:none;display:flex;align-items:center;justify-content:center;}
+.install-banner .im svg{width:15px;height:15px;}
+.install-banner .txt{flex:1;}
+.install-banner .t1{font-family:'Inter';font-size:11px;font-weight:600;}
+.install-banner .t2{font-family:'Inter';font-size:9.5px;color:#9AA6BE;margin-top:1px;}
+.install-banner button{background:#fff;color:var(--ink);font-family:'Inter';font-weight:700;font-size:9.5px;padding:6px 10px;border-radius:7px;}
+
+.mobile-topbar{display:flex;justify-content:space-between;align-items:center;padding:2px 18px 14px;}
+.mobile-topbar .word{font-family:'Space Grotesk';font-weight:700;font-size:15px;}
+.mobile-topbar .word .scale{color:var(--cyan);}
+
+.mobile-body{flex:1;padding:0 16px 12px;overflow:hidden;}
+
+/* home screen */
+.m-kpi-row{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px;}
+.m-kpi{background:var(--panel);border:1px solid var(--panel-line);border-radius:11px;padding:11px 12px;}
+.m-kpi .l{font-family:'IBM Plex Mono';font-size:8px;letter-spacing:.08em;text-transform:uppercase;color:#8FA0C0;}
+.m-kpi .v{font-family:'Space Grotesk';font-size:19px;font-weight:700;margin-top:5px;}
+.m-scan-cta{
+  background:linear-gradient(135deg,var(--blue),#1746DB);border-radius:13px;padding:16px;
+  display:flex;align-items:center;gap:12px;margin-bottom:14px;
+}
+.m-scan-cta .ic{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;flex:none;}
+.m-scan-cta .ic svg{width:19px;height:19px;}
+.m-scan-cta .t1{font-family:'Inter';font-weight:700;font-size:12.5px;}
+.m-scan-cta .t2{font-family:'Inter';font-size:10px;color:#D8E0F5;margin-top:2px;}
+
+.m-list-label{font-family:'IBM Plex Mono';font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:#8FA0C0;margin:14px 0 8px;}
+.m-veh-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--panel-line);}
+.m-veh-row .thumb{width:44px;height:32px;border-radius:7px;background:linear-gradient(135deg,#26314A,#151D30);flex:none;}
+.m-veh-row .name{font-family:'Inter';font-weight:600;font-size:11.5px;}
+.m-veh-row .sub{font-family:'Inter';font-size:10px;color:#8FA0C0;margin-top:1px;}
+.m-status{margin-left:auto;font-family:'Inter';font-size:9px;font-weight:700;padding:3px 8px;border-radius:20px;}
+.m-status.avail{background:rgba(34,197,139,.18);color:#5CE0A8;}
+.m-status.pend{background:rgba(245,166,35,.18);color:#F5C168;}
+
+/* scan screen */
+.m-frame{
+  margin-top:10px;width:100%;aspect-ratio:4/5;border-radius:16px;background:#0F1830;
+  position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  border:1px solid var(--panel-line);overflow:hidden;
+}
+.m-frame .corner{position:absolute;width:20px;height:20px;border-color:var(--cyan);border-style:solid;}
+.m-frame .c1{top:14px;left:14px;border-width:2.5px 0 0 2.5px;}
+.m-frame .c2{top:14px;right:14px;border-width:2.5px 2.5px 0 0;}
+.m-frame .c3{bottom:14px;left:14px;border-width:0 0 2.5px 2.5px;}
+.m-frame .c4{bottom:14px;right:14px;border-width:0 2.5px 2.5px 0;}
+.m-frame .vin-plate{background:rgba(0,224,255,.1);border:1px solid rgba(0,224,255,.4);border-radius:6px;padding:6px 12px;font-family:'IBM Plex Mono';font-size:11px;color:var(--cyan);}
+.m-hint{font-family:'Inter';font-size:11px;color:#9AA6BE;text-align:center;margin-top:14px;}
+.m-shutter-row{display:flex;justify-content:center;align-items:center;margin-top:18px;gap:26px;}
+.m-shutter{width:56px;height:56px;border-radius:50%;background:var(--cyan);border:4px solid rgba(0,224,255,.25);}
+.m-side-ic{width:36px;height:36px;border-radius:10px;background:var(--panel);border:1px solid var(--panel-line);display:flex;align-items:center;justify-content:center;}
+.m-side-ic svg{width:16px;height:16px;color:#8FA0C0;}
+
+/* result screen */
+.m-result-hero{background:linear-gradient(135deg,#26314A,#151D30);border-radius:14px;height:120px;margin-top:8px;position:relative;overflow:hidden;}
+.m-result-info{padding:14px 2px 6px;}
+.m-result-info .name{font-family:'Space Grotesk';font-weight:700;font-size:16px;}
+.m-result-info .trim{font-family:'Inter';font-size:11px;color:#8FA0C0;margin-top:2px;}
+.m-vin-box{background:var(--panel);border:1px solid var(--panel-line);border-radius:10px;padding:10px 12px;margin-top:12px;}
+.m-vin-box .l{font-family:'IBM Plex Mono';font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#8FA0C0;}
+.m-vin-box .v{font-family:'IBM Plex Mono';font-size:11.5px;color:var(--cyan);margin-top:4px;}
+.m-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;}
+.m-detail{background:var(--panel);border:1px solid var(--panel-line);border-radius:9px;padding:9px 10px;}
+.m-detail .l{font-family:'IBM Plex Mono';font-size:8px;color:#8FA0C0;text-transform:uppercase;letter-spacing:.06em;}
+.m-detail .v{font-family:'Inter';font-weight:600;font-size:12px;margin-top:3px;}
+
+/* bottom nav */
+.bottom-nav{
+  display:flex;align-items:center;justify-content:space-around;
+  background:#0B1220;border-top:1px solid var(--panel-line);padding:10px 8px 14px;
+  position:relative;
+}
+.bn-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:#5A6480;}
+.bn-item svg{width:18px;height:18px;}
+.bn-item span{font-family:'Inter';font-size:8.5px;font-weight:600;}
+.bn-item.active{color:var(--cyan);}
+.bn-center{
+  width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--cyan));
+  display:flex;align-items:center;justify-content:center;margin-top:-26px;
+  box-shadow:0 8px 18px -4px rgba(43,92,255,.6);
+}
+.bn-center svg{width:20px;height:20px;color:#fff;}
+
+.phone-caption{text-align:center;font-family:'IBM Plex Mono';font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--steel);margin-top:16px;}
+
+/* notes */
+.notes{margin-top:80px;border-top:1px solid var(--line);padding-top:26px;display:grid;grid-template-columns:repeat(3,1fr);gap:28px;}
+.note h3{font-family:'Space Grotesk';font-size:14px;margin:0 0 8px;}
+.note p{font-family:'Inter';font-size:12.5px;color:var(--steel);line-height:1.6;margin:0;}
+footer{text-align:center;margin-top:80px;font-family:'IBM Plex Mono';font-size:10px;letter-spacing:.3em;color:var(--steel);text-transform:uppercase;}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="top-eyebrow">
+    <div class="brand-chip">
+      <svg width="20" height="20" viewBox="0 0 100 100"><path d="M28 26 L50 76 L72 26" fill="none" stroke="#2B5CFF" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>VinScale</span>
+    </div>
+    <div class="eyebrow"><span class="dot"></span>Product Prototype — CRM / DMS</div>
+  </div>
+
+  <h1 class="headline">Dealer Operations Console</h1>
+  <p class="sub">A single workspace for inventory, VIN intake, and lead pipeline — built on the VinScale scan-first system. Desktop console below, installable PWA on the right.</p>
+
+  <!-- DESKTOP -->
+  <div class="browser-frame">
+    <div class="browser-chrome">
+      <div class="dots"><span></span><span></span><span></span></div>
+      <div class="urlbar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#7C879C" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+        app.vinscale.io/dashboard
+      </div>
+    </div>
+    <div class="app-shell">
+
+      <!-- SIDEBAR -->
+      <div class="sidebar">
+        <div class="brand">
+          <svg width="22" height="22" viewBox="0 0 100 100"><path d="M28 26 L50 76 L72 26" fill="none" stroke="url(#gsb)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="gsb" x1="28" y1="26" x2="72" y2="76"><stop offset="0" stop-color="#2B5CFF"/><stop offset="1" stop-color="#00E0FF"/></linearGradient></defs></svg>
+          <div class="word">VIN<span class="scale">SCALE</span></div>
+        </div>
+
+        <div class="navgroup">
+          <div class="label">Workspace</div>
+          <div class="navitem active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Dashboard</div>
+          <div class="navitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10l9-7 9 7v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Inventory<span class="badge">214</span></div>
+          <div class="navitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Leads / CRM<span class="badge">58</span></div>
+          <div class="navitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Deals</div>
+        </div>
+
+        <div class="navgroup">
+          <div class="label">Insights</div>
+          <div class="navitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/></svg>Reports</div>
+          <div class="navitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</div>
+        </div>
+
+        <div class="sidebar-footer">
+          <div class="scan-fab">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M4 8V6a2 2 0 0 1 2-2h2M20 8V6a2 2 0 0 0-2-2h-2M4 16v2a2 2 0 0 0 2 2h2M20 16v2a2 2 0 0 1-2 2h-2"/><line x1="4" y1="12" x2="20" y2="12"/></svg>
+            Scan VIN
+          </div>
+        </div>
+      </div>
+
+      <!-- MAIN -->
+      <div class="main">
+        <div class="main-topbar">
+          <div class="searchbar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Search inventory, leads, or VIN…
+          </div>
+          <div class="topbar-right">
+            <div class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><div class="dot"></div></div>
+            <div class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></div>
+            <div class="avatar">MK</div>
+          </div>
+        </div>
+
+        <div class="page-title">
+          <div>
+            <h2>Dashboard</h2>
+            <div class="muted">Tuesday, August 25 — Riverside Auto Group</div>
+          </div>
+          <div class="btn-primary"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M4 8V6a2 2 0 0 1 2-2h2M20 8V6a2 2 0 0 0-2-2h-2M4 16v2a2 2 0 0 0 2 2h2M20 16v2a2 2 0 0 1-2 2h-2"/><line x1="4" y1="12" x2="20" y2="12"/></svg>New Scan</div>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-card"><div class="label">Vehicles in stock</div><div class="value">214</div><div class="delta up">↑ 12 this week</div></div>
+          <div class="kpi-card"><div class="label">Active leads</div><div class="value">58</div><div class="delta up">↑ 6 this week</div></div>
+          <div class="kpi-card"><div class="label">Deals closed (MTD)</div><div class="value">23</div><div class="delta up">↑ 9%</div></div>
+          <div class="kpi-card"><div class="label">Avg. days to sale</div><div class="value">9.4</div><div class="delta down">↓ 1.2 days</div></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h3>Recently scanned</h3><span class="link">View inventory</span></div>
+          <table>
+            <thead><tr><th>Vehicle</th><th>VIN</th><th>Status</th><th>Price</th><th>Days in stock</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><div class="veh-cell"><div class="veh-thumb"></div><div><div class="name">2024 Ford F‑150 XLT</div><div class="trim">SuperCrew · 4WD</div></div></div></td>
+                <td class="mono">1FTFW1E5XNFA12345</td>
+                <td><span class="status-pill available">Available</span></td>
+                <td>$42,900</td>
+                <td>6</td>
+              </tr>
+              <tr>
+                <td><div class="veh-cell"><div class="veh-thumb"></div><div><div class="name">2023 BMW X5 xDrive40i</div><div class="trim">Premium Pkg</div></div></div></td>
+                <td class="mono">5UXCR6C04R9W2345</td>
+                <td><span class="status-pill pending">Pending</span></td>
+                <td>$58,300</td>
+                <td>2</td>
+              </tr>
+              <tr>
+                <td><div class="veh-cell"><div class="veh-thumb"></div><div><div class="name">2022 Honda Accord Sport</div><div class="trim">1.5T CVT</div></div></div></td>
+                <td class="mono">1HGCM82633A004352</td>
+                <td><span class="status-pill available">Available</span></td>
+                <td>$24,750</td>
+                <td>14</td>
+              </tr>
+              <tr>
+                <td><div class="veh-cell"><div class="veh-thumb"></div><div><div class="name">2024 Tesla Model Y</div><div class="trim">Long Range AWD</div></div></div></td>
+                <td class="mono">7SAYGDEE1RF123456</td>
+                <td><span class="status-pill sold">Sold</span></td>
+                <td>$47,200</td>
+                <td>0</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="panel" style="padding:18px 20px;">
+          <div class="panel-head" style="padding:0 0 16px;border:none;"><h3>Lead pipeline</h3><span class="link">Open CRM</span></div>
+          <div class="pipeline">
+            <div class="pipe-col">
+              <div class="col-head">New lead<span class="count">14</span></div>
+              <div class="lead-card"><div class="name">Alicia Ferrer</div><div class="veh">Interested — F‑150 XLT</div><div class="foot"><span class="src">Web form</span><div class="lead-avatar">AF</div></div></div>
+              <div class="lead-card"><div class="name">Devon Marsh</div><div class="veh">Interested — Model Y</div><div class="foot"><span class="src">Walk-in</span><div class="lead-avatar">DM</div></div></div>
+            </div>
+            <div class="pipe-col">
+              <div class="col-head">Contacted<span class="count">11</span></div>
+              <div class="lead-card"><div class="name">Priya Nair</div><div class="veh">Interested — X5</div><div class="foot"><span class="src">Phone</span><div class="lead-avatar">PN</div></div></div>
+            </div>
+            <div class="pipe-col">
+              <div class="col-head">Test drive<span class="count">7</span></div>
+              <div class="lead-card"><div class="name">Sam O'Brien</div><div class="veh">Accord Sport</div><div class="foot"><span class="src">Referral</span><div class="lead-avatar">SO</div></div></div>
+            </div>
+            <div class="pipe-col">
+              <div class="col-head">Negotiation<span class="count">4</span></div>
+              <div class="lead-card"><div class="name">Jorge Villa</div><div class="veh">F‑150 XLT</div><div class="foot"><span class="src">Trade-in</span><div class="lead-avatar">JV</div></div></div>
+            </div>
+            <div class="pipe-col">
+              <div class="col-head">Won<span class="count">23</span></div>
+              <div class="lead-card"><div class="name">Nina Cho</div><div class="veh">Model Y</div><div class="foot"><span class="src">Closed</span><div class="lead-avatar">NC</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT RAIL -->
+      <div class="rail">
+        <h3>Live scan feed</h3>
+        <div class="rail-sub">Real-time VIN capture across all lots</div>
+
+        <div class="scan-feed-item">
+          <div class="scan-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#00E0FF" stroke-width="2"><path d="M4 8V6a2 2 0 0 1 2-2h2M20 8V6a2 2 0 0 0-2-2h-2M4 16v2a2 2 0 0 0 2 2h2M20 16v2a2 2 0 0 1-2 2h-2"/><line x1="4" y1="12" x2="20" y2="12"/></svg></div>
+          <div><div class="vin-mono">1FTFW1E5XNFA12345</div><div class="time">Lot 2 · 2 min ago</div></div>
+        </div>
+        <div class="scan-feed-item">
+          <div class="scan-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#00E0FF" stroke-width="2"><path d="M4 8V6a2 2 0 0 1 2-2h2M20 8V6a2 2 0 0 0-2-2h-2M4 16v2a2 2 0 0 0 2 2h2M20 16v2a2 2 0 0 1-2 2h-2"/><line x1="4" y1="12" x2="20" y2="12"/></svg></div>
+          <div><div class="vin-mono">5UXCR6C04R9W2345</div><div class="time">Lot 1 · 18 min ago</div></div>
+        </div>
+        <div class="scan-feed-item">
+          <div class="scan-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#00E0FF" stroke-width="2"><path d="M4 8V6a2 2 0 0 1 2-2h2M20 8V6a2 2 0 0 0-2-2h-2M4 16v2a2 2 0 0 0 2 2h2M20 16v2a2 2 0 0 1-2 2h-2"/><line x1="4" y1="12" x2="20" y2="12"/></svg></div>
+          <div><div class="vin-mono">1HGCM82633A004352</div><div class="time">Trade-in bay · 41 min ago</div></div>
+        </div>
+        <div class="scan-feed-item">
+          <div class="scan-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#00E0FF" stroke-width="2"><path d="M4 8V6a2 2 0 0 1 2-2h2M20 8V6a2 2 0 0 0-2-2h-2M4 16v2a2 2 0 0 0 2 2h2M20 16v2a2 2 0 0 1-2 2h-2"/><line x1="4" y1="12" x2="20" y2="12"/></svg></div>
+          <div><div class="vin-mono">7SAYGDEE1RF123456</div><div class="time">Lot 3 · 1 hr ago</div></div>
+        </div>
+
+        <div class="rail-cta">
+          <p>Scan a VIN from any device to auto-create a listing.</p>
+          <button>Open scanner</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MOBILE PWA -->
+  <div class="mobile-section">
+    <div class="section-head">
+      <h2>Installable PWA</h2>
+      <div class="eyebrow">Field App — Home · Scan · Vehicle</div>
+    </div>
+
+    <div class="mobile-row">
+
+      <!-- Phone 1: Home + install banner -->
+      <div>
+        <div class="phone-shell">
+          <div class="phone-inner">
+            <div class="notch"></div>
+            <div class="statusbar"><span>9:41</span><span>VinScale · PWA</span><span>100%</span></div>
+            <div class="install-banner">
+              <div class="im"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg></div>
+              <div class="txt"><div class="t1">Install VinScale</div><div class="t2">Works offline · scans sync later</div></div>
+              <button>Install</button>
+            </div>
+            <div class="mobile-topbar">
+              <div class="word">VIN<span class="scale">SCALE</span></div>
+              <div class="avatar" style="width:28px;height:28px;font-size:10px;">MK</div>
+            </div>
+            <div class="mobile-body">
+              <div class="m-kpi-row">
+                <div class="m-kpi"><div class="l">In stock</div><div class="v">214</div></div>
+                <div class="m-kpi"><div class="l">Active leads</div><div class="v">58</div></div>
+              </div>
+              <div class="m-scan-cta">
+                <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M4 8V6a2 2 0 0 1 2-2h2M20 8V6a2 2 0 0 0-2-2h-2M4 16v2a2 2 0 0 0 2 2h2M20 16v2a2 2 0 0 1-2 2h-2"/><line x1="4" y1="12" x2="20" y2="12"/></svg></div>
+                <div><div class="t1">Scan a VIN</div><div class="t2">Auto-fill a new listing</div></div>
+              </div>
+              <div class="m-list-label">Recently added</div>
+              <div class="m-veh-row"><div class="thumb"></div><div><div class="name">Ford F‑150 XLT</div><div class="sub">1FTFW1E5XNFA12345</div></div><div class="m-status avail">Available</div></div>
+              <div class="m-veh-row"><div class="thumb"></div><div><div class="name">BMW X5 xDrive40i</div><div class="sub">5UXCR6C04R9W2345</div></div><div class="m-status pend">Pending</div></div>
+              <div class="m-veh-row" style="border-bottom:none;"><div class="thumb"></div><div><div class="name">Honda Accord Sport</div><div class="sub">1HGCM82633A004352</div></div><div class="m-status avail">Available</div></div>
+            </div>
+            <div class="bottom-nav">
+              <div class="bn-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>Home</span></div>
+              <div class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10l9-7 9 7v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>Stock</span></div>
+              <div class="bn-center"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><line x1="4" y1="12" x2="20" y2="12"/><path d="M4 8V6a2 2 0 0 1 2-2h2M20 8V6a2 2 0 0 0-2-2h-2M4 16v2a2 2 0 0 0 2 2h2M20 16v2a2 2 0 0 1-2 2h-2"/></svg></div>
+              <div class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/></svg><span>Leads</span></div>
+              <div class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/></svg><span>Activity</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-caption">Home — offline-ready</div>
+      </div>
+
+      <!-- Phone 2: Scan -->
+      <div>
+        <div class="phone-shell">
+          <div class="phone-inner">
+            <div class="notch"></div>
+            <div class="statusbar"><span>9:41</span><span>Scan VIN</span><span>100%</span></div>
+            <div class="mobile-topbar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#8FA0C0" stroke-width="2" width="16" height="16"><path d="M15 18l-6-6 6-6"/></svg>
+              <div class="word" style="font-size:13px;">Scan VIN</div>
+              <div style="width:16px;"></div>
+            </div>
+            <div class="mobile-body">
+              <div class="m-frame">
+                <div class="corner c1"></div><div class="corner c2"></div><div class="corner c3"></div><div class="corner c4"></div>
+                <div class="vin-plate">1FTFW1E5XNFA12345</div>
+              </div>
+              <div class="m-hint">Align the VIN plate or windshield etch within the frame</div>
+              <div class="m-shutter-row">
+                <div class="m-side-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 22h16M12 2v10M8 6l4-4 4 4"/></svg></div>
+                <div class="m-shutter"></div>
+                <div class="m-side-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h4m-4 0v0M19 3h0a2 2 0 0 1 2 2v4M3 15v4a2 2 0 0 0 2 2h4m10-6v4a2 2 0 0 1-2 2h-4"/></svg></div>
+              </div>
+            </div>
+            <div class="bottom-nav">
+              <div class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>Home</span></div>
+              <div class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10l9-7 9 7v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>Stock</span></div>
+              <div class="bn-center"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><line x1="4" y1="12" x2="20" y2="12"/><path d="M4 8V6a2 2 0 0 1 2-2h2M20 8V6a2 2 0 0 0-2-2h-2M4 16v2a2 2 0 0 0 2 2h2M20 16v2a2 2 0 0 1-2 2h-2"/></svg></div>
+              <div class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/></svg><span>Leads</span></div>
+              <div class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/></svg><span>Activity</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-caption">Camera scan — live OCR</div>
+      </div>
+
+      <!-- Phone 3: Result -->
+      <div>
+        <div class="phone-shell">
+          <div class="phone-inner">
+            <div class="notch"></div>
+            <div class="statusbar"><span>9:41</span><span>Vehicle found</span><span>100%</span></div>
+            <div class="mobile-topbar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#8FA0C0" stroke-width="2" width="16" height="16"><path d="M15 18l-6-6 6-6"/></svg>
+              <div class="word" style="font-size:13px;">Vehicle found</div>
+              <div style="width:16px;"></div>
+            </div>
+            <div class="mobile-body">
+              <div class="m-result-hero"></div>
+              <div class="m-result-info">
+                <div class="name">2024 Ford F‑150</div>
+                <div class="trim">XLT SuperCrew · 4WD</div>
+              </div>
+              <div class="m-vin-box">
+                <div class="l">Decoded VIN</div>
+                <div class="v">1FTFW1E5XNFA12345</div>
+              </div>
+              <div class="m-detail-grid">
+                <div class="m-detail"><div class="l">Mileage</div><div class="v">18,240</div></div>
+                <div class="m-detail"><div class="l">Est. value</div><div class="v">$42,900</div></div>
+              </div>
+            </div>
+            <div style="padding:0 16px 16px;">
+              <div class="scan-fab" style="background:linear-gradient(135deg,var(--blue),#1746DB);">Add to inventory</div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-caption">Auto-decoded listing</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="notes">
+    <div class="note"><h3>Same tokens, one system</h3><p>Every color, weight, and radius here is pulled straight from the brand file — Ink for dark surfaces, Royal Blue for primary actions, Cyan reserved for scan states only. Nothing was reinvented for this screen.</p></div>
+    <div class="note"><h3>Scan stays the hero action</h3><p>The scan reticle and viewfinder corners from the logomark reappear literally as the camera UI — the brand's signature isn't just a logo, it's the actual scanning interaction.</p></div>
+    <div class="note"><h3>Mono still means "read data"</h3><p>VIN strings, timestamps, and decoded fields stay in IBM Plex Mono everywhere — desktop table, activity feed, and mobile scan result — so scanned data is instantly recognizable from typed content.</p></div>
+  </div>
+
+  <footer>Vinscale — Scan · Create · Scale</footer>
+</div>
+</body>
+</html>
